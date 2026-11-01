@@ -7,7 +7,7 @@
 
 /* Conversation cards share the same controls and data, with a compact composition. */
 body:has(.hydration-shell.embedded){background:transparent}
-.embedded{max-width:600px;padding:0 12px 4px;background:var(--surface);border-radius:16px}
+.embedded{max-width:600px;padding:0 12px 4px;background:transparent;border-radius:0}
 .embedded .topbar{height:44px;border-bottom:1px solid var(--line)}
 .embedded .brand{font-size:15px;letter-spacing:.4px;gap:7px}
 .embedded .brand-icon{width:26px;height:29px;border-radius:9px}
@@ -21,7 +21,8 @@ body:has(.hydration-shell.embedded){background:transparent}
 .compact-progress{width:100px;min-width:65px;text-align:right}
 .compact-progress>span{font-size:10px;color:#359ad0}
 .compact-progress .progress-track{height:4px;margin:5px 0 0}
-.embedded .card{padding:13px 14px;border-radius:13px;margin-bottom:8px;box-shadow:none}
+.embedded .card{padding:13px 0;border:0;border-radius:0;background:transparent;margin-bottom:8px;box-shadow:none}
+.embedded .week-card{border-top:1px solid var(--line);padding-top:14px}
 .embedded .section-title{margin-bottom:10px}
 .embedded .section-title h2{font-size:13px;letter-spacing:0}
 .embedded .preset-grid{gap:6px}
@@ -45,4 +46,4 @@ body:has(.hydration-shell.embedded){background:transparent}
 .embedded .week-summary strong{font-size:14px;margin-left:4px}
 .embedded .date-range{font-size:9px;padding-bottom:0}
 .embedded .alert,.embedded .notice{padding:8px 11px;font-size:11px;margin-bottom:8px;border-radius:9px}
-@media(max-width:400px){.embedded{padding:0 8px 3px}.embedded .card{padding:12px 10px}.compact-today{gap:8px}.compact-progress{width:65px}.compact-today>div:first-child{gap:7px}.compact-today strong{font-size:23px}.embedded .primary{padding:0 17px}}
+@media(max-width:400px){.embedded{padding:0 8px 3px}.embedded .card{padding:12px 0}.compact-today{gap:8px}.compact-progress{width:65px}.compact-today>div:first-child{gap:7px}.compact-today strong{font-size:23px}.embedded .primary{padding:0 17px}}
