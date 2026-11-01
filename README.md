@@ -27,7 +27,7 @@ npm run dev -- --host 127.0.0.1 --port 3187
 - `hydration_add({amountMl,requestId,occurredAt?})`：新增一次饮水；新饮水必须用新 requestId，网络重试复用同一 ID；occurredAt 为包含时区的 ISO 时间，缺省为现在。
 - `hydration_update({id,amountMl,occurredAt?})` / `hydration_delete({id})`：修改、删除当前用户的记录。
 - `hydration_set_goal({goalMl})`：修改用于全部七日杯子图的当前目标。
-- `hydration_open({})`：返回当前数据并打开 `ui://he-da-shui/hydration-v7.html`。
+- `hydration_open({})`：返回当前数据并打开 `ui://he-da-shui/hydration-v8.html`。
 
 标准 JSON-RPC 入口 `/mcp` 支持 discover、initialize、tools/list、tools/call、resources/list、resources/read。数据工具返回 structuredContent，只有打开工具关联 UI 资源。网站 `/api/hydration` 使用相同业务服务。Sites 平台负责认证和私有访问边界；服务器代码不接受客户端提供的 userId。
 
@@ -41,16 +41,10 @@ Site 身份见 `.openai/hosting.json`。通过 Sites 源码工作流提交、打
 
 ## 两种布局
 
-聊天中的 MCP App 使用紧凑布局：当日累计、记一笔、七日杯子图；完整网页可通过私有 Site 地址直接访问。完整网页默认展开目标设置和每日明细。两种布局复用 `HydrationApp`、饮水控件和业务服务。`/?view=compact` 可预览紧凑布局；默认 `/` 为完整布局。旧 v1/v2/v3/v4/v5/v6 UI 资源地址仍可读取，新打开工具使用 v7 资源。紧凑布局关闭 prefersBorder（含兼容字段），移除应用白底圆角外壳和分区盒框，仅保留交互控件轮廓。宿主是否保留工具卡外壳由 Codex 决定。
+聊天中的 MCP App 使用紧凑布局：当日累计、记一笔、七日杯子图；完整网页可通过私有 Site 地址直接访问。完整网页默认展开目标设置和每日明细。两种布局复用 `HydrationApp`、饮水控件和业务服务。`/?view=compact` 可预览紧凑布局；默认 `/` 为完整布局。旧 v1/v2/v3/v4/v5/v6/v7 UI 资源地址仍可读取，新打开工具使用 v8 资源。紧凑布局关闭 prefersBorder（含兼容字段），移除应用白底圆角外壳和分区盒框，仅保留交互控件轮廓。宿主是否保留工具卡外壳由 Codex 决定。
 
 紧凑卡片只保留主数据与操作：今日总量/目标、毫升数选择、自定义输入、记一笔、七日杯子与每日数值。隐藏重复标题、输入说明、百分比、日期范围、重复日期及底部统计；屏幕阅读器仍能读取毫升单位、完整日期和未记录状态。
 
 嵌入卡片填满宿主提供的宽度，七日杯子图置顶，应用内不显示品牌或分区标题。初始化及 host-context-changed 通知中接收标准宿主主题变量，控件跟随宿主文字、背景、边框和深浅主题；水位保留低饱和蓝色。宿主未提供主题时使用系统深浅模式和透明背景。
 
 嵌入卡片不再提供“明细与设置”入口，并移除图表与输入区之间的分隔横线。
-
-## 代记朋友
-
-明确报告“小王昨天喝了 2200 ml”时，先读取 today 以北京时间确定昨天日期，再调用 `hydration_set_friend_day({name,date,totalMl})`。同一名字和日期重复报告会覆盖当天总量，不会累加，也不影响自己的饮水记录。功能讨论中的示例不保存为真实数据。`hydration_delete_friend_day({id})` 删除指定误记。
-
-七日快照包含当前用户自己代记的 `friendDays`，按最近更新排序。卡片在杯子图下显示一条朋友对比：优先选择选中日期的最近代记，否则显示最近代记；只比较同一日期。自己当天未记录时显示未知状态，不以零计算差值。所有代记数据仍仅当前用户可见，无朋友账号、邀请或对外分享。

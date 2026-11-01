@@ -1,8 +1,7 @@
 export const TIMEZONE = "Asia/Shanghai";
 export type Entry = { id: string; amountMl: number; occurredAt: string };
 export type Day = { date: string; totalMl: number; count: number; fill: number; achieved: boolean; entries: Entry[] };
-export type FriendDay = { id: string; name: string; date: string; totalMl: number };
-export type Snapshot = { today: string; goalMl: number; days: Day[]; recordedDays: number; achievedDays: number; timezone: string; friendDays?: FriendDay[] };
+export type Snapshot = { today: string; goalMl: number; days: Day[]; recordedDays: number; achievedDays: number; timezone: string };
 export class InputError extends Error { status: number; constructor(message: string, status = 400) { super(message); this.status = status; } }
 export function shanghaiDate(date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
@@ -35,31 +34,4 @@ export function summarize(entries: Entry[], goalMl: number, now = new Date()): S
     return {date, totalMl, count:daily.length, fill:Math.min(totalMl/goalMl,1), achieved:totalMl>=goalMl, entries:daily};
   });
   return { today, goalMl, days, recordedDays:days.filter(d=>d.count>0).length, achievedDays:days.filter(d=>d.achieved).length, timezone:TIMEZONE };
-}
-
-export function validFriendName(value: unknown): {name:string;key:string} {
- if(typeof value!=="string")throw new InputError("请输入朋友的名字");
- const name=value.normalize("NFKC").trim().replace(/\s+/g," ");
- if(!name||name.length>40)throw new InputError("朋友名字需要 1–40 个字符");
- return {name,key:name.toLowerCase()};
-}
-export function validFriendDate(value: unknown, now=new Date()): string {
- if(typeof value!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(value))throw new InputError("日期请使用 YYYY-MM-DD");
- const parsed=new Date(value+"T12:00:00+08:00");
- if(!Number.isFinite(parsed.getTime())||shanghaiDate(parsed)!==value)throw new InputError("日期无效");
- if(value>shanghaiDate(now))throw new InputError("不能记录未来的饮水");
- return value;
-}
-export function validDailyTotal(value:unknown):number {
- if(typeof value!=="number"||!Number.isInteger(value)||value<0||value>20000)throw new InputError("每日总量请输入 0–20000 的整数毫升数");
- return value;
-}
-export function friendComparison(snapshot: Snapshot | null, selectedDate: string) {
- if(!snapshot?.friendDays?.length)return null;
- const report=snapshot.friendDays.find(f=>f.date===selectedDate)??snapshot.friendDays[0];
- const mine=snapshot.days.find(d=>d.date===report.date);
- const mineMl=mine?.count?mine.totalMl:null;
- const label=report.date===snapshot.today?"今天":report.date===dateShift(snapshot.today,-1)?"昨天":report.date.slice(5).replace("-","/");
- const difference=mineMl===null?null:mineMl-report.totalMl;
- return {report,label,mineMl,difference};
 }

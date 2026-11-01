@@ -1,15 +1,14 @@
-import { and, desc, eq, gte, isNull } from "drizzle-orm";
+import { and, eq, gte, isNull } from "drizzle-orm";
 import { getDb } from "../db";
-import { entries, settings, friendDays } from "../db/schema";
-import { dateShift, InputError, shanghaiDate, summarize, validAmount, validId, validTime, validFriendName, validFriendDate, validDailyTotal } from "./hydration";
+import { entries, settings } from "../db/schema";
+import { dateShift, InputError, shanghaiDate, summarize, validAmount, validId, validTime } from "./hydration";
 export async function readWeek(userId: string) {
   const db = getDb();
-  const [config, records, friends] = await Promise.all([
+  const [config, records] = await Promise.all([
     db.select().from(settings).where(eq(settings.userId,userId)).get(),
     db.select().from(entries).where(and(eq(entries.userId,userId),isNull(entries.deletedAt),gte(entries.occurredAt,new Date(dateShift(shanghaiDate(),-6)+"T00:00:00+08:00").toISOString()))).all(),
-    db.select({id:friendDays.id,name:friendDays.name,date:friendDays.date,totalMl:friendDays.totalMl}).from(friendDays).where(and(eq(friendDays.userId,userId),isNull(friendDays.deletedAt),gte(friendDays.date,dateShift(shanghaiDate(),-6)))).orderBy(desc(friendDays.updatedAt),desc(friendDays.date),friendDays.id).all(),
   ]);
-  return {...summarize(records,config?.goalMl ?? 2000),friendDays:friends};
+  return summarize(records,config?.goalMl ?? 2000);
 }
 export async function act(userId: string, tool: string, args: Record<string,unknown> = {}) {
   const db=getDb();
@@ -28,11 +27,6 @@ export async function act(userId: string, tool: string, args: Record<string,unkn
   } else if (tool === "hydration_set_goal") {
     const goalMl=validAmount(args.goalMl,"每日目标");
     await db.insert(settings).values({userId,goalMl}).onConflictDoUpdate({target:settings.userId,set:{goalMl}}).run();
-  } else if (tool === "hydration_set_friend_day") {
-    const {name,key}=validFriendName(args.name), date=validFriendDate(args.date), totalMl=validDailyTotal(args.totalMl), updatedAt=new Date().toISOString();
-    await db.insert(friendDays).values({id:crypto.randomUUID(),userId,friendKey:key,name,date,totalMl,updatedAt}).onConflictDoUpdate({target:[friendDays.userId,friendDays.friendKey,friendDays.date],set:{name,totalMl,updatedAt,deletedAt:null}}).run();
-  } else if (tool === "hydration_delete_friend_day") {
-    await db.update(friendDays).set({deletedAt:new Date().toISOString()}).where(and(eq(friendDays.id,validId(args.id)),eq(friendDays.userId,userId),isNull(friendDays.deletedAt))).run();
   } else throw new InputError("未知操作",404);
   return readWeek(userId);
 }

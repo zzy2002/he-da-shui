@@ -16,7 +16,7 @@ export async function POST(request:Request){
   if(body.method==="tools/list") return reply({tools,ttlMs:60000,cacheScope:"private"});
   if(body.method==="resources/list") return reply({ttlMs:60000,cacheScope:"private",resources:[{uri:UI_URI,name:"喝大水",mimeType:"text/html;profile=mcp-app"}]});
   if(body.method==="resources/read"){
-    if(![UI_URI,"ui://he-da-shui/hydration-v1.html","ui://he-da-shui/hydration-v2.html","ui://he-da-shui/hydration-v3.html","ui://he-da-shui/hydration-v4.html","ui://he-da-shui/hydration-v5.html","ui://he-da-shui/hydration-v6.html"].includes(body.params?.uri??"")) return fail(-32602,"Unknown resource");
+    if(![UI_URI,"ui://he-da-shui/hydration-v1.html","ui://he-da-shui/hydration-v2.html","ui://he-da-shui/hydration-v3.html","ui://he-da-shui/hydration-v4.html","ui://he-da-shui/hydration-v5.html","ui://he-da-shui/hydration-v6.html","ui://he-da-shui/hydration-v7.html"].includes(body.params?.uri??"")) return fail(-32602,"Unknown resource");
     return reply({ttlMs:60000,cacheScope:"private",contents:[{uri:body.params?.uri??UI_URI,mimeType:"text/html;profile=mcp-app",text:uiHtml,_meta:{ui:{prefersBorder:false},"openai/widgetPrefersBorder":false,"openai/ui":{availableDisplayModes:["inline","fullscreen"],preferredDisplayMode:"inline"}}}]});
   }
   if(body.method==="tools/call"){
