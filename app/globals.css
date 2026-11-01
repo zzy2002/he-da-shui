@@ -4,3 +4,45 @@
 @media(min-width:1100px){.hydration-shell{padding-top:12px;padding-bottom:16px}.intro{padding-top:45px}.intro h1{font-size:32px}}
 @media(max-width:600px){.hydration-shell{padding:0 16px}.topbar{height:78px}.intro{padding:27px 1px 22px}.intro h1{font-size:25px}.card{border-radius:18px;margin-bottom:14px}.today-card{padding:24px 22px;min-height:205px}.today-copy{width:65%}.amount-total strong{font-size:52px}.amount-total>span{font-size:17px}.hero-cup{width:105px}.cup-halo{width:105px;height:105px;top:14px}.cup-large{width:99px;height:143px}.hero-caption{font-size:8px}.encouragement{font-size:10px;line-height:1.6}.log-card,.week-card,.history-card{padding:23px 17px}.preset-grid{gap:6px}.preset{padding:12px 2px;gap:3px}.preset b{font-size:16px}.preset span{font-size:9px}.preset svg{display:none}.entry-row{gap:8px}.primary{padding:0 17px}.field-label{font-size:9px}.input-unit{padding:0 9px}.week-grid{gap:0;margin:0 -10px}.day-cup{padding:9px 1px;border-radius:10px}.day-cup strong{font-size:10px}.day-cup small{font-size:7px}.day-name{font-size:9px}.day-date{font-size:8px}.day-cup .cup{margin-top:2px;margin-bottom:2px}.week-summary{gap:15px;flex-wrap:wrap}.legend{font-size:8px}.section-title h2{font-size:16px}.section-title .eyebrow{font-size:8px;letter-spacing:1px}.date-range{font-size:9px}.entry-actions{gap:2px}.settings{flex-wrap:wrap}.settings form{width:100%}.settings .input-unit{flex:1;width:auto}.empty-history{padding:20px 0}.delete-question{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Conversation cards share the same controls and data, with a compact composition. */
+body:has(.hydration-shell.embedded){background:transparent}
+.embedded{max-width:600px;padding:0 12px 4px;background:var(--surface);border-radius:16px}
+.embedded .topbar{height:44px;border-bottom:1px solid var(--line)}
+.embedded .brand{font-size:15px;letter-spacing:.4px;gap:7px}
+.embedded .brand-icon{width:26px;height:29px;border-radius:9px}
+.embedded .brand-icon svg{width:13px;height:17px}
+.full-view-link{font-size:11px;color:#4687ad;padding:7px 0 7px 8px;white-space:nowrap}
+.compact-today{display:flex;justify-content:space-between;align-items:center;padding:13px 3px;gap:20px}
+.compact-today>div:first-child{display:flex;align-items:baseline;gap:10px}
+.compact-today>div:first-child>span{font-size:11px;color:var(--muted);white-space:nowrap}
+.compact-today strong{font-size:25px;font-weight:600;letter-spacing:-.8px;white-space:nowrap}
+.compact-today strong small{font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0}
+.compact-progress{width:100px;min-width:65px;text-align:right}
+.compact-progress>span{font-size:10px;color:#359ad0}
+.compact-progress .progress-track{height:4px;margin:5px 0 0}
+.embedded .card{padding:13px 14px;border-radius:13px;margin-bottom:8px;box-shadow:none}
+.embedded .section-title{margin-bottom:10px}
+.embedded .section-title h2{font-size:13px;letter-spacing:0}
+.embedded .preset-grid{gap:6px}
+.embedded .preset{padding:8px 3px;gap:3px;border-radius:9px}
+.embedded .preset svg{display:none}
+.embedded .preset b{font-size:16px}
+.embedded .preset span{font-size:9px;margin-top:3px}
+.embedded .entry-row{margin-top:10px;gap:9px}
+.embedded .field-label{font-size:9px;gap:5px}
+.embedded .input-unit,.embedded .time-input{height:36px}
+.embedded .primary{height:36px;padding:0 24px;font-size:12px;border-radius:9px}
+.embedded .plus{font-size:18px}
+.embedded .week-grid{margin:0 -5px;gap:2px}
+.embedded .day-cup{padding:6px 1px;border-radius:9px}
+.embedded .day-cup .cup{max-width:42px;margin:1px 0}
+.embedded .day-name,.embedded .no-record{font-size:9px}
+.embedded .day-cup strong{font-size:10px;margin-top:1px}
+.embedded .day-cup small{font-size:7px}
+.embedded .day-date{font-size:8px;margin-top:3px}
+.embedded .week-summary{margin-top:10px;padding-top:9px;gap:20px;font-size:10px}
+.embedded .week-summary strong{font-size:14px;margin-left:4px}
+.embedded .date-range{font-size:9px;padding-bottom:0}
+.embedded .alert,.embedded .notice{padding:8px 11px;font-size:11px;margin-bottom:8px;border-radius:9px}
+@media(max-width:400px){.embedded{padding:0 8px 3px}.embedded .card{padding:12px 10px}.compact-today{gap:8px}.compact-progress{width:65px}.compact-today>div:first-child{gap:7px}.compact-today strong{font-size:23px}.embedded .primary{padding:0 17px}}

@@ -33,7 +33,7 @@ async function call(tool:string,args:Record<string,unknown>={}){
  if(!snapshot(result?.structuredContent))throw new Error("服务返回的数据不完整，请重试");
  initial=result.structuredContent;return initial!;
 }
-const client={read:async()=>{await ready;return initial??await call("hydration_read_week");},call,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
+const client={openFull:async()=>{await ready;await rpc("ui/open-link",{url:"https://he-da-shui-daily.zzybread.chatgpt.site"});},read:async()=>{await ready;return initial??await call("hydration_read_week");},call,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
 createRoot(document.getElementById("root")!).render(<HydrationApp client={client} embedded/>);
 let previousHeight=0;
 new ResizeObserver(()=>{const height=document.documentElement.scrollHeight;if(height!==previousHeight){previousHeight=height;void ready.then(()=>post({jsonrpc:"2.0",method:"ui/notifications/size-changed",params:{height}})).catch(()=>{});}}).observe(document.getElementById("root")!);

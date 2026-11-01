@@ -27,7 +27,7 @@ npm run dev -- --host 127.0.0.1 --port 3187
 - `hydration_add({amountMl,requestId,occurredAt?})`：新增一次饮水；新饮水必须用新 requestId，网络重试复用同一 ID；occurredAt 为包含时区的 ISO 时间，缺省为现在。
 - `hydration_update({id,amountMl,occurredAt?})` / `hydration_delete({id})`：修改、删除当前用户的记录。
 - `hydration_set_goal({goalMl})`：修改用于全部七日杯子图的当前目标。
-- `hydration_open({})`：返回当前数据并打开 `ui://he-da-shui/hydration-v1.html`。
+- `hydration_open({})`：返回当前数据并打开 `ui://he-da-shui/hydration-v2.html`。
 
 标准 JSON-RPC 入口 `/mcp` 支持 discover、initialize、tools/list、tools/call、resources/list、resources/read。数据工具返回 structuredContent，只有打开工具关联 UI 资源。网站 `/api/hydration` 使用相同业务服务。Sites 平台负责认证和私有访问边界；服务器代码不接受客户端提供的 userId。
 
@@ -38,3 +38,7 @@ npm run dev -- --host 127.0.0.1 --port 3187
 ## 发布
 
 Site 身份见 `.openai/hosting.json`。通过 Sites 源码工作流提交、打包、私有发布；复用平台创建的 canonical plugin，不另建重复插件。Local D1 数据不会随源码发布到云端。部署归档、测试截图和最终验收信息保存于忽略的 `outputs/`。
+
+## 两种布局
+
+聊天中的 MCP App 使用紧凑布局：当日累计、记一笔、七日杯子图；“明细与设置”通过 MCP Apps 的 `ui/open-link` 打开完整网页。完整网页默认展开目标设置和每日明细。两种布局复用 `HydrationApp`、饮水控件和业务服务。`/?view=compact` 可预览紧凑布局；默认 `/` 为完整布局。旧 v1 UI 资源地址仍可读取，新打开工具使用 v2 资源。

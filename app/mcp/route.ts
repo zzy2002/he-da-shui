@@ -16,8 +16,8 @@ export async function POST(request:Request){
   if(body.method==="tools/list") return reply({tools,ttlMs:60000,cacheScope:"private"});
   if(body.method==="resources/list") return reply({ttlMs:60000,cacheScope:"private",resources:[{uri:UI_URI,name:"喝大水",mimeType:"text/html;profile=mcp-app"}]});
   if(body.method==="resources/read"){
-    if(body.params?.uri!==UI_URI) return fail(-32602,"Unknown resource");
-    return reply({ttlMs:60000,cacheScope:"private",contents:[{uri:UI_URI,mimeType:"text/html;profile=mcp-app",text:uiHtml,_meta:{ui:{prefersBorder:true},"openai/ui":{availableDisplayModes:["inline","fullscreen"],preferredDisplayMode:"inline"}}}]});
+    if(body.params?.uri!==UI_URI&&body.params?.uri!=="ui://he-da-shui/hydration-v1.html") return fail(-32602,"Unknown resource");
+    return reply({ttlMs:60000,cacheScope:"private",contents:[{uri:body.params?.uri??UI_URI,mimeType:"text/html;profile=mcp-app",text:uiHtml,_meta:{ui:{prefersBorder:true},"openai/ui":{availableDisplayModes:["inline","fullscreen"],preferredDisplayMode:"inline"}}}]});
   }
   if(body.method==="tools/call"){
     const user=await getChatGPTUser();if(!user)return fail(-32001,"需要登录才能读取或记录饮水",401);
