@@ -44,3 +44,13 @@ final result: passed
 - Simulated dark full panel used backgroundrgb(32,32,30), textrgb(231,231,223) and had no horizontal overflow.
 - One browser automation MutationObserver error appeared while controlling a long nested iframe; the shipped UI bundle contains no MutationObserver. Primary app interactions completed via native accessibility actions. No app failure was observed.
 - Verification boundaries: mode notifications and side-panel width were simulated locally. The current Codex native expansion and external-site connection remain to be checked after publication when reachable. No real cloud user entries were added, edited or deleted during tests.
+
+## Follow-up: cups follow the selected time range
+
+final result: passed
+
+- Full-view calendar now follows statistics bounds:7d=7cups,30d=30cups,all=first-record date through today. Empty all-time views fall back to7unknown days. Missing dates keep a gray cup/dash; totals above goal stay actual while water caps atfull.
+- Browser/local fixture verified: compact7,full all62,full30d30,back to7d7. Narrow420px view measured420px client and scroll width; all30 cups fit490px content without internal clipping. Longer62-day calendar has an internal scrollbar and initially shows recent dates.
+- Clicking2026-10-04 correctly showed790ml outside the seven-day snapshot, then returned to today. Switching ranges resets a selection that falls outside the new range.
+- Screenshot: outputs/calendar-30-days.png (420×780, local example data). Existing system font, charcoal/teal tokens and cup assets retained.
+- Nine domain tests and TypeScript passed. No production drinking records changed. Site access was observedpublic; user explicitly instructedkeepingpublic during this update. Personal APIs still require logged-in identity and isolate byuser.

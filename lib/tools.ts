@@ -1,8 +1,8 @@
 const object=(properties:Record<string,unknown>,required:string[]=[])=>({type:"object",properties,required,additionalProperties:false});
 const amount={type:"integer",minimum:1,maximum:20000};
 const timestamp={type:"string",description:"饮水发生时间，ISO 8601 且包含时区；默认现在。补记昨天必须显式给出昨天的时间。"};
-export const UI_URI="ui://he-da-shui/hydration-v11.html";
-export const DETAILS_URI="ui://he-da-shui/details-v11.html";
+export const UI_URI="ui://he-da-shui/hydration-v12.html";
+export const DETAILS_URI="ui://he-da-shui/details-v12.html";
 const range={type:"string",enum:["7d","30d","all"],description:"近7天、近30天或全部；按北京时间划分。"};
 export const tools=[
  {name:"hydration_read_week",title:"查看七日饮水",description:"读取北京时间今天及前六天自己的饮水记录和目标；返回 today 日期，可用于解析“昨天”。未记录不代表没有喝水。",inputSchema:object({}),annotations:{readOnlyHint:true}},

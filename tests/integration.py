@@ -48,7 +48,7 @@ assert 'friendDays' not in request()[1] and 'leaderboard' not in request()[1]
 for method in ['server/discover','tools/list']:
  status,reply=request('/mcp',{'jsonrpc':'2.0','id':1,'method':method});assert status==200 and 'result' in reply
  if method=='tools/list':
-  assert next(t for t in reply['result']['tools'] if t['name']=='hydration_add')['_meta']['ui']['resourceUri']=='ui://he-da-shui/hydration-v11.html'
+  assert next(t for t in reply['result']['tools'] if t['name']=='hydration_add')['_meta']['ui']['resourceUri']=='ui://he-da-shui/hydration-v12.html'
   assert {t['name'] for t in reply['result']['tools']}=={'hydration_read_week','hydration_add','hydration_update','hydration_delete','hydration_set_goal','hydration_open','hydration_open_details','hydration_read_history','hydration_read_statistics'}
 status,reply=request('/mcp',{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'hydration_read_week','arguments':{}}});assert reply['result']['structuredContent']['days'][-1]['totalMl']==400
 assert 'feedback' not in request()[1]
@@ -56,7 +56,7 @@ assert 'feedback' not in request()[1]
 assert action('hydration_add',{'amountMl':1600,'requestId':str(uuid.uuid4())})[1]['feedback']['goalReached']
 assert not action('hydration_add',{'amountMl':50,'requestId':str(uuid.uuid4())})[1]['feedback']['goalReached']
 assert not action('hydration_add',{'amountMl':2000,'occurredAt':yesterday,'requestId':str(uuid.uuid4())})[1]['feedback']['goalReached']
-status,reply=request('/mcp',{'jsonrpc':'2.0','id':3,'method':'resources/read','params':{'uri':'ui://he-da-shui/hydration-v11.html'}})
+status,reply=request('/mcp',{'jsonrpc':'2.0','id':3,'method':'resources/read','params':{'uri':'ui://he-da-shui/hydration-v12.html'}})
 resource=reply['result']['contents'][0];assert reply['result']['resultType']=='complete' and reply['result']['ttlMs']>=0 and reply['result']['cacheScope']=='private'
 assert resource['_meta']['openai/ui']['preferredDisplayMode']=='inline' and 'postMessage' in resource['text']
 print('PASS: auth, 250+500, retry deduplication, request conflict, user isolation, edit/delete, goal, backfill, validation, origin, MCP tools/resource, removed social operations rejected, record feedback, goal transition, add UI binding')
@@ -92,7 +92,7 @@ assert action('hydration_update',{'id':entry['id'],'amountMl':444})[0]==200
 assert next(row for row in action('hydration_read_history',{'limit':100})[1]['items'] if row['id']==entry['id'])['amountMl']==444
 assert action('hydration_delete',{'id':entry['id']})[0]==200
 assert not any(row['id']==entry['id'] for row in action('hydration_read_history',{'limit':100})[1]['items'])
-status,reply=request('/mcp',{'jsonrpc':'2.0','id':20,'method':'resources/read','params':{'uri':'ui://he-da-shui/details-v11.html'}})
+status,reply=request('/mcp',{'jsonrpc':'2.0','id':20,'method':'resources/read','params':{'uri':'ui://he-da-shui/details-v12.html'}})
 full=reply['result']['contents'][0]
 assert full['_meta']['openai/ui']['preferredDisplayMode']=='fullscreen' and 'data-default-view=\"details\"' in full['text']
 assert action('hydration_open_details',{})[0]==200

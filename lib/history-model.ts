@@ -1,4 +1,4 @@
-import { dateShift, InputError, shanghaiDate, type Entry } from "./hydration.ts";
+import { dateShift, InputError, shanghaiDate, type Entry, type Day } from "./hydration.ts";
 export type Range="7d"|"30d"|"all";
 export type DailyTotal={date:string;totalMl:number;count:number;achieved:boolean};
 export type HistoryPage={items:Entry[];nextCursor:string|null;totalCount:number;range:Range;timezone:string};
@@ -11,4 +11,12 @@ export function statisticsFrom(rows:{date:string;totalMl:number;count:number}[],
  const {today,from}=bounds(range,now),days=rows.map(day=>({...day,totalMl:Number(day.totalMl),count:Number(day.count),achieved:Number(day.totalMl)>=goalMl}));
  const totalMl=days.reduce((sum,day)=>sum+day.totalMl,0);
  return {range,fromDate:from??days[0]?.date??null,toDate:today,goalMl,totalMl,entryCount:days.reduce((sum,day)=>sum+day.count,0),recordedDays:days.length,achievedDays:days.filter(day=>day.achieved).length,averageRecordedMl:days.length?Math.round(totalMl/days.length):0,days,timezone:"Asia/Shanghai"};
+}
+
+/** One cup per calendar day, including days with no records. */
+export function calendarDays(stats:Statistics):Day[]{
+ const start=stats.fromDate??dateShift(stats.toDate,-6);
+ const count=Math.max(0,Math.round((Date.parse(stats.toDate+"T12:00:00+08:00")-Date.parse(start+"T12:00:00+08:00"))/86400000)+1);
+ const recorded=new Map(stats.days.map(day=>[day.date,day]));
+ return Array.from({length:count},(_,index)=>{const date=dateShift(start,index),day=recorded.get(date),totalMl=day?.totalMl??0;return {date,totalMl,count:day?.count??0,fill:Math.min(totalMl/stats.goalMl,1),achieved:!!day&&totalMl>=stats.goalMl,entries:[]};});
 }
