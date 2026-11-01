@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import HydrationApp from "../components/hydration-app";
 import type { Snapshot } from "./hydration";
+import { applyHostContext } from "./host-theme";
 // Standard MCP Apps JSON-RPC bridge; business data never lives in iframe storage.
 let nextId=1;
 const requests=new Map<number,{resolve:(value:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
@@ -16,6 +17,7 @@ window.addEventListener("message",event=>{
  if(event.source!==window.parent||!event.data||event.data.jsonrpc!=="2.0")return;
  if(hostOrigin&&event.origin!==hostOrigin)return;
  const message=event.data;
+ if(message.method==="ui/notifications/host-context-changed")applyHostContext(message.params);
  if(message.id!==undefined&&requests.has(message.id)){
   // A matching initialization response pins the parent origin for this instance.
   if(event.origin!=="null")hostOrigin??=event.origin;const request=requests.get(message.id)!;clearTimeout(request.timer);requests.delete(message.id);
@@ -24,7 +26,7 @@ window.addEventListener("message",event=>{
  if(message.method==="ui/notifications/tool-result"&&snapshot(message.params?.structuredContent)){initial=message.params.structuredContent;for(const fn of subscribers)fn(initial!);}
  if(message.method==="ui/resource-teardown"&&message.id!==undefined)post({jsonrpc:"2.0",id:message.id,result:{}});
 });
-const ready=rpc("ui/initialize",{protocolVersion:"2026-01-26",appInfo:{name:"喝大水",version:"1.0.0"},appCapabilities:{availableDisplayModes:["inline","fullscreen"]}}).then(()=>{post({jsonrpc:"2.0",method:"ui/notifications/initialized"});});
+const ready=rpc("ui/initialize",{protocolVersion:"2026-01-26",appInfo:{name:"喝大水",version:"1.0.0"},appCapabilities:{availableDisplayModes:["inline","fullscreen"]}}).then(result=>{applyHostContext(result?.hostContext);post({jsonrpc:"2.0",method:"ui/notifications/initialized"});});
 // Retain the rejection for read()/call() while avoiding an unhandled rejection.
 ready.catch(()=>{});
 async function call(tool:string,args:Record<string,unknown>={}){
