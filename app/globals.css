@@ -59,7 +59,8 @@ body:has(.hydration-shell.embedded){background:transparent}
 /* In-chat layout fills the host container and inherits its standard theme tokens. */
 :root:has(.embedded){color-scheme:light dark}
 .embedded{
- width:100%;max-width:none;margin:0;padding:0;
+ width:100%;max-width:none;margin:0;padding:16px;
+ background:light-dark(#fff,#262624);border:0;border-radius:16px;box-shadow:none;
  --ink:var(--color-text-primary,light-dark(#30302d,#e5e5e0));
  --muted:var(--color-text-secondary,light-dark(#797973,#aaa9a1));
  --surface:var(--color-background-secondary,color-mix(in srgb,var(--ink) 3%,transparent));
@@ -98,5 +99,5 @@ body:has(.hydration-shell.embedded){background:transparent}
 .embedded .notice{background:var(--color-background-success,var(--tint));color:var(--color-text-success,var(--ink));border-color:var(--line)}
 .embedded .alert{background:var(--color-background-danger,var(--tint));color:var(--color-text-danger,var(--ink));border-color:var(--line)}
 .embedded button:focus-visible,.embedded a:focus-visible,.embedded input:focus-visible{outline-color:var(--color-ring-primary,var(--muted))}
-@media(max-width:400px){.embedded{padding:0}.embedded .day-name{font-size:10px}.embedded .day-cup strong{font-size:10px}.embedded .compact-today{gap:8px}.embedded .full-view-link{font-size:10px}}
+@media(max-width:400px){.embedded{padding:12px}.embedded .day-name{font-size:10px}.embedded .day-cup strong{font-size:10px}.embedded .compact-today{gap:8px}.embedded .full-view-link{font-size:10px}}
 html[data-host-theme]:has(.embedded){background:var(--color-background-primary,transparent)}
