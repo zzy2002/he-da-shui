@@ -11,7 +11,11 @@ def request(path='/api/hydration',body=None,user=a,origin=None):
  req=urllib.request.Request(base+path,data=json.dumps(body).encode() if body is not None else None,headers=headers)
  try:r=opener.open(req)
  except urllib.error.HTTPError as e:r=e
- return r.code,json.load(r)
+ raw=r.read()
+ try:parsed=json.loads(raw)
+ except Exception:
+  raise AssertionError(f"HTTP {r.code} for {path}: {raw[:300]!r}")
+ return r.code,parsed
 def action(tool,args,user=a):return request(body={'tool':tool,'args':args},user=user)
 assert request(user=None)[0]==401
 first={'amountMl':250,'requestId':str(uuid.uuid4())}
@@ -38,5 +42,6 @@ for method in ['server/discover','tools/list']:
  status,reply=request('/mcp',{'jsonrpc':'2.0','id':1,'method':method});assert status==200 and 'result' in reply
 status,reply=request('/mcp',{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'hydration_read_week','arguments':{}}});assert reply['result']['structuredContent']['days'][-1]['totalMl']==400
 status,reply=request('/mcp',{'jsonrpc':'2.0','id':3,'method':'resources/read','params':{'uri':'ui://he-da-shui/hydration-v1.html'}})
-resource=reply['result']['contents'][0];assert resource['_meta']['openai/ui']['preferredDisplayMode']=='inline' and 'postMessage' in resource['text']
+resource=reply['result']['contents'][0];assert reply['result']['resultType']=='complete' and reply['result']['ttlMs']>=0 and reply['result']['cacheScope']=='private'
+assert resource['_meta']['openai/ui']['preferredDisplayMode']=='inline' and 'postMessage' in resource['text']
 print('PASS: auth, 250+500, retry deduplication, request conflict, user isolation, edit/delete, goal, backfill, validation, origin, MCP tools/resource')
