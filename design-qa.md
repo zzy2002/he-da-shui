@@ -54,3 +54,10 @@ final result: passed
 - Clicking2026-10-04 correctly showed790ml outside the seven-day snapshot, then returned to today. Switching ranges resets a selection that falls outside the new range.
 - Screenshot: outputs/calendar-30-days.png (420×780, local example data). Existing system font, charcoal/teal tokens and cup assets retained.
 - Nine domain tests and TypeScript passed. No production drinking records changed. Site access was observedpublic; user explicitly instructedkeepingpublic during this update. Personal APIs still require logged-in identity and isolate byuser.
+
+## Follow-up: public product introduction and usage guide
+
+- `/guide` now presents scenarios, a live sample, locations of each interface, chat examples, cup semantics, editing/backfill and FAQs. `/` remains the logged-in personal workspace. Existing `#say` links are preserved.
+- The demo switches between actual compact and full components with independent in-memory sample records. Browser verification: simulated150ml updated800 to950 and appeared in full history/statistics; changing the sample goal2000 to1800 recalculated achievement without changing the17.05L total. Sample timestamps are normalized to ISO UTC for stable chronological sorting.
+- Desktop layout and390px iframe viewport were visually inspected. The narrow document measured390px client/scroll widths with no horizontal overflow; scenario/page cards stack and demo controls wrap. Narrow nested-iframe clicks were unavailable in the browser controller; full demo interactions were verified in the desktop tab.
+- Guide example operations do not call real hydration APIs. Personal cloud records were not changed. Nine domain tests and TypeScript passed.
