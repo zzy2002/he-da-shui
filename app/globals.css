@@ -22,7 +22,7 @@ body:has(.hydration-shell.embedded){background:transparent}
 .compact-progress>span{font-size:10px;color:#359ad0}
 .compact-progress .progress-track{height:4px;margin:5px 0 0}
 .embedded .card{padding:13px 0;border:0;border-radius:0;background:transparent;margin-bottom:8px;box-shadow:none}
-.embedded .week-card{border-top:1px solid var(--line);padding-top:14px}
+.embedded .week-card{border-top:0;padding-top:14px}
 .embedded .section-title{margin-bottom:10px}
 .embedded .section-title h2{font-size:13px;letter-spacing:0}
 .embedded .preset-grid{gap:6px}
@@ -75,7 +75,7 @@ body:has(.hydration-shell.embedded){background:transparent}
  --water-rim:light-dark(#b6d8df,#a7cbd5);
  color:var(--ink);font-family:var(--font-sans,inherit);
 }
-.embedded .week-card{border-top:0;margin:0;padding:4px 0 14px;border-bottom:1px solid var(--line)}
+.embedded .week-card{border-top:0;margin:0;padding:4px 0 14px;border-bottom:0}
 .embedded .week-grid{margin:0;gap:clamp(2px,1vw,12px)}
 .embedded .day-cup{padding:8px 1px;border-radius:var(--border-radius-md,10px)}
 .embedded .day-cup .cup{width:clamp(32px,7vw,64px);max-width:100%;margin:3px 0}
