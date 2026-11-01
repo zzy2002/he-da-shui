@@ -1,7 +1,7 @@
 const object=(properties:Record<string,unknown>,required:string[]=[])=>({type:"object",properties,required,additionalProperties:false});
 const amount={type:"integer",minimum:1,maximum:20000};
 const timestamp={type:"string",description:"饮水发生时间，ISO 8601 且包含时区；默认现在。补记昨天必须显式给出昨天的时间。"};
-export const UI_URI="ui://he-da-shui/hydration-v3.html";
+export const UI_URI="ui://he-da-shui/hydration-v4.html";
 export const tools=[
  {name:"hydration_read_week",title:"查看七日饮水",description:"读取北京时间今天及前六天的饮水记录、总量和目标。未记录不代表没有喝水。",inputSchema:object({}),annotations:{readOnlyHint:true}},
  {name:"hydration_add",title:"记一笔饮水",description:"用户明确说喝了水后记录单次毫升数，自动累加。每次新饮水使用新的 requestId，网络重试复用原 ID。不要在提醒时自动创建记录。",inputSchema:object({amountMl:amount,requestId:{type:"string",description:"每次新饮水的唯一请求标识，建议 UUID"},occurredAt:timestamp},["amountMl","requestId"]),annotations:{readOnlyHint:false,destructiveHint:false,idempotentHint:true}},

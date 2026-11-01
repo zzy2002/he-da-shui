@@ -47,3 +47,11 @@ body:has(.hydration-shell.embedded){background:transparent}
 .embedded .date-range{font-size:9px;padding-bottom:0}
 .embedded .alert,.embedded .notice{padding:8px 11px;font-size:11px;margin-bottom:8px;border-radius:9px}
 @media(max-width:400px){.embedded{padding:0 8px 3px}.embedded .card{padding:12px 0}.compact-today{gap:8px}.compact-progress{width:65px}.compact-today>div:first-child{gap:7px}.compact-today strong{font-size:23px}.embedded .primary{padding:0 17px}}
+
+/* Minimal conversation content: primary values and controls only. */
+.embedded .compact-today{padding:16px 3px 9px}
+.embedded .log-card{padding-top:10px}
+.embedded .preset{padding:10px 3px}
+.embedded .entry-row{margin-top:9px}
+.embedded .week-card{margin-top:5px;padding-bottom:8px}
+.embedded .day-cup{padding:6px 1px 4px}
