@@ -18,6 +18,13 @@ export async function act(userId: string, tool: string, args: Record<string,unkn
     await db.insert(entries).values({id:crypto.randomUUID(),userId,requestId,amountMl,occurredAt,createdAt:new Date().toISOString()}).onConflictDoNothing({target:[entries.userId,entries.requestId]}).run();
     const existing=await db.select().from(entries).where(and(eq(entries.userId,userId),eq(entries.requestId,requestId))).get();
     if (!existing || existing.amountMl !== amountMl || (args.occurredAt !== undefined && existing.occurredAt !== occurredAt)) throw new InputError("同一请求已用于不同的记录，请刷新后重试",409);
+    const data=await readWeek(userId), date=shanghaiDate(new Date(existing.occurredAt));
+    const day=data.days.find(day=>day.date===date);
+    if(!existing.deletedAt&&day){
+      const previousTotalMl=Math.max(0,day.totalMl-amountMl);
+      return {...data,feedback:{eventId:requestId,entryId:existing.id,date,amountMl,previousTotalMl,goalReached:date===data.today&&previousTotalMl<data.goalMl&&day.totalMl>=data.goalMl}};
+    }
+    return data;
   } else if (tool === "hydration_update") {
     const id=validId(args.id), amountMl=validAmount(args.amountMl);
     const result=await db.update(entries).set({amountMl,...(args.occurredAt===undefined?{}:{occurredAt:validTime(args.occurredAt)})}).where(and(eq(entries.id,id),eq(entries.userId,userId),isNull(entries.deletedAt))).returning({id:entries.id}).all();

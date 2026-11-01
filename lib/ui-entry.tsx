@@ -7,6 +7,8 @@ let nextId=1;
 const requests=new Map<number,{resolve:(value:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
 const subscribers=new Set<(value:Snapshot)=>void>();
 let initial:Snapshot|undefined;
+let latestNotification:Snapshot|undefined;
+let notificationRevision=0;
 let hostOrigin:string|undefined;
 const post=(value:unknown)=>window.parent.postMessage(value,hostOrigin??"*");
 function rpc(method:string,params:unknown){
@@ -23,7 +25,7 @@ window.addEventListener("message",event=>{
   if(event.origin!=="null")hostOrigin??=event.origin;const request=requests.get(message.id)!;clearTimeout(request.timer);requests.delete(message.id);
   if(message.error)request.reject(new Error(message.error.message??"操作失败"));else request.resolve(message.result);return;
  }
- if(message.method==="ui/notifications/tool-result"&&snapshot(message.params?.structuredContent)){initial=message.params.structuredContent;for(const fn of subscribers)fn(initial!);}
+ if(message.method==="ui/notifications/tool-result"&&snapshot(message.params?.structuredContent)){initial=message.params.structuredContent;latestNotification=initial;notificationRevision++;for(const fn of subscribers)fn(initial!);}
  if(message.method==="ui/resource-teardown"&&message.id!==undefined)post({jsonrpc:"2.0",id:message.id,result:{}});
 });
 const ready=rpc("ui/initialize",{protocolVersion:"2026-01-26",appInfo:{name:"喝大水",version:"1.0.0"},appCapabilities:{availableDisplayModes:["inline","fullscreen"]}}).then(result=>{applyHostContext(result?.hostContext);post({jsonrpc:"2.0",method:"ui/notifications/initialized"});});
@@ -35,7 +37,7 @@ async function call(tool:string,args:Record<string,unknown>={}){
  if(!snapshot(result?.structuredContent))throw new Error("服务返回的数据不完整，请重试");
  initial=result.structuredContent;return initial!;
 }
-const client={read:async()=>{await ready;return initial??await call("hydration_read_week");},call,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
+const client={read:async()=>{await ready;if(initial)return initial;const revision=notificationRevision;const data=await call("hydration_read_week");if(notificationRevision!==revision&&latestNotification){initial=latestNotification;return latestNotification;}return data;},call,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
 createRoot(document.getElementById("root")!).render(<HydrationApp client={client} embedded/>);
 let previousHeight=0;
 new ResizeObserver(()=>{const height=document.documentElement.scrollHeight;if(height!==previousHeight){previousHeight=height;void ready.then(()=>post({jsonrpc:"2.0",method:"ui/notifications/size-changed",params:{height}})).catch(()=>{});}}).observe(document.getElementById("root")!);

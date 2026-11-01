@@ -1,7 +1,8 @@
 export const TIMEZONE = "Asia/Shanghai";
 export type Entry = { id: string; amountMl: number; occurredAt: string };
 export type Day = { date: string; totalMl: number; count: number; fill: number; achieved: boolean; entries: Entry[] };
-export type Snapshot = { today: string; goalMl: number; days: Day[]; recordedDays: number; achievedDays: number; timezone: string };
+export type RecordFeedback = { eventId: string; entryId: string; date: string; amountMl: number; previousTotalMl: number; goalReached: boolean };
+export type Snapshot = { today: string; goalMl: number; days: Day[]; recordedDays: number; achievedDays: number; timezone: string; feedback?: RecordFeedback };
 export class InputError extends Error { status: number; constructor(message: string, status = 400) { super(message); this.status = status; } }
 export function shanghaiDate(date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);

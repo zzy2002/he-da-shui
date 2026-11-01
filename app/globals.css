@@ -101,3 +101,37 @@ body:has(.hydration-shell.embedded){background:transparent}
 .embedded button:focus-visible,.embedded a:focus-visible,.embedded input:focus-visible{outline-color:var(--color-ring-primary,var(--muted))}
 @media(max-width:400px){.embedded{padding:12px}.embedded .day-name{font-size:10px}.embedded .day-cup strong{font-size:10px}.embedded .compact-today{gap:8px}.embedded .full-view-link{font-size:10px}}
 html[data-host-theme]:has(.embedded){background:var(--color-background-primary,transparent)}
+
+/* Click-only recorder and brief, event-driven feedback. */
+.compact-record-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:12px 0 2px}
+.compact-record-row .compact-today{padding:0}
+.compact-record-actions,.web-record-row{display:flex;align-items:center;gap:12px}
+.amount-stepper{display:flex;align-items:center;gap:4px;height:40px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink)}
+.amount-stepper button{display:grid;place-items:center;width:36px;height:38px;flex-shrink:0;border:0;border-radius:10px;background:transparent;color:inherit}
+.amount-stepper button:hover:not(:disabled){background:var(--tint)}
+.amount-stepper output{min-width:66px;text-align:center;font-size:16px;font-weight:550;font-variant-numeric:tabular-nums}
+.amount-stepper small{font-size:10px;color:var(--muted);font-weight:400}
+.embedded .record-button,.record-button{height:40px;padding:0 18px;gap:7px}
+.return-today{flex-basis:100%;text-align:right}
+.web-record-row .field-label{max-width:160px;margin-left:auto}
+.record-receipt{display:flex;align-items:center;gap:7px;min-height:28px;margin:9px 0 0;color:var(--ink);font-size:12px;animation:receipt-in .3s ease-out}
+.record-receipt small{font-size:11px;color:var(--muted)}
+.record-receipt button{border:0;background:transparent;color:var(--muted);padding:6px 8px;font-size:11px;margin-left:auto;text-decoration:underline;text-underline-offset:3px}
+.receipt-goal{color:var(--water-bottom,#298fd0)}
+.water-level{transition:transform .9s cubic-bezier(.22,.7,.25,1)}
+.day-cup{position:relative}.record-pulse .cup{animation:cup-nod .75s ease-out}.water-added{position:absolute;top:27%;font-size:12px;font-weight:600;color:var(--water-bottom,#298fd0);pointer-events:none;animation:water-added 1.6s ease-out forwards}
+.goal-pulse{animation:goal-halo 1.8s ease-out}.goal-celebrating .receipt-goal>svg{animation:goal-check .75s cubic-bezier(.18,.7,.3,1.3)}
+@keyframes receipt-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes cup-nod{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}60%{transform:rotate(3deg)}}
+@keyframes water-added{0%{opacity:0;transform:translateY(10px)}20%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(-24px)}}
+@keyframes goal-halo{0%,100%{box-shadow:0 0 0 0 transparent}40%{box-shadow:0 0 0 7px color-mix(in srgb,var(--water-bottom,#298fd0) 18%,transparent)}}
+@keyframes goal-check{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@media(max-width:520px){.compact-record-row{gap:13px}.compact-record-actions{width:100%;gap:10px}.compact-record-actions .amount-stepper{flex:1;justify-content:space-between}.embedded .record-button{padding:0 14px}.web-record-row{flex-wrap:wrap}.web-record-row .field-label{margin-left:0}.amount-stepper output{min-width:57px}}
+@media(prefers-reduced-motion:reduce){.water-level{transition:none}.water-added{animation:none;display:none}.record-pulse .cup,.goal-pulse,.goal-celebrating .receipt-goal>svg,.record-receipt{animation:none}}
+
+/* The manual shares the app's quiet type, white surfaces and water accent. */
+.guide-shell{--ink:#30302d;--muted:#797973;--line:#e7e7e1;--surface:#fff;--tint:#f4f4ef;background:#f7f7f3;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;min-height:100vh;padding:0 28px 48px}
+.guide-width{width:min(1040px,100%);margin:auto}.guide-nav{display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:84px}.guide-brand{font-size:16px;font-weight:650}.guide-brand span{font-size:12px;font-weight:400;color:var(--muted);margin-left:14px}.guide-open{border:1px solid var(--line);border-radius:30px;padding:10px 17px;font-size:12px;background:#fff}.guide-hero{padding:56px 0 38px;max-width:670px}.guide-kicker{font-size:10px;letter-spacing:2px;color:#5d8991}.guide-hero h1{font-size:clamp(32px,5vw,52px);font-weight:600;letter-spacing:-2px;line-height:1.25;margin:16px 0}.guide-hero p{font-size:15px;line-height:1.8;color:var(--muted)}.guide-links{display:flex;gap:22px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:0 0 38px}.guide-links a:hover{color:var(--ink)}
+.guide-section{scroll-margin-top:30px;margin:0 0 42px}.guide-heading{display:flex;align-items:baseline;gap:13px;margin-bottom:18px}.guide-heading>span{font-size:10px;color:#6a9ca7;font-variant-numeric:tabular-nums}.guide-heading h2{font-size:20px;font-weight:600;letter-spacing:-.5px}.guide-section p{color:var(--muted);font-size:13px;line-height:1.9}.guide-sayings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.guide-saying{background:#fff;border-radius:16px;padding:21px;min-width:0}.guide-saying h3{font-size:11px;color:var(--muted);font-weight:400;margin:0 0 14px}.guide-saying blockquote{margin:0;font-size:17px;line-height:1.6;font-weight:550}.guide-saying p{font-size:11px;margin-top:12px}.guide-aside{margin-top:16px;font-size:11px!important}.guide-demo{border-radius:20px;background:#fff;padding:18px}.guide-demo-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 0 12px}.guide-demo-top>span{font-size:11px;color:var(--muted)}.guide-demo-buttons{display:flex;gap:8px;flex-wrap:wrap}.guide-demo-buttons button{padding:8px 11px;border:1px solid var(--line);background:var(--tint);border-radius:8px;color:var(--ink);font-size:11px}.guide-demo-error{color:#a75543!important}.guide-demo .embedded{--color-text-primary:#30302d;--color-text-secondary:#797973;--color-background-secondary:#f7f7f4;--color-background-tertiary:#f0f0eb;color-scheme:light;padding:6px 0 0;background:#fff}
+.guide-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin-top:22px}.guide-steps h3{font-size:13px;margin:0 0 7px;font-weight:600}.guide-steps p{font-size:12px}.guide-table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.8}.guide-table th{text-align:left;color:var(--muted);font-weight:400;padding:10px 12px}.guide-table td{border-top:1px solid var(--line);padding:13px 12px;vertical-align:top}.guide-table td:first-child{width:190px;font-weight:500}.guide-faq{border-top:1px solid var(--line);padding:17px 0}.guide-faq summary{font-size:13px;cursor:pointer;line-height:1.7}.guide-faq p{margin:10px 0 0;max-width:770px}.guide-footer{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted);padding-top:10px}
+@media(max-width:650px){.guide-shell{padding:0 18px 35px}.guide-nav{min-height:74px}.guide-brand span{margin-left:8px}.guide-hero{padding:28px 0}.guide-links{gap:17px;margin-bottom:30px}.guide-sayings,.guide-steps{grid-template-columns:1fr}.guide-saying{padding:18px}.guide-sayings{gap:9px}.guide-saying blockquote{font-size:16px}.guide-steps{gap:17px}.guide-demo{padding:14px}.guide-demo-buttons{gap:6px}.guide-table td:first-child{width:110px}.guide-table th,.guide-table td{padding-left:4px;padding-right:8px}.guide-footer{flex-wrap:wrap}}
