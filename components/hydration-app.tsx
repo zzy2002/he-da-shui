@@ -4,8 +4,9 @@ import { Minus, Plus, Check, CircleCheck } from "lucide-react";
 import type { Snapshot, RecordFeedback } from "../lib/hydration";
 import { shanghaiDate } from "../lib/hydration";
 
-type Client = { read: () => Promise<Snapshot>; call:(tool:string,args:Record<string,unknown>)=>Promise<Snapshot>; subscribe?:(fn:(value:Snapshot)=>void)=>()=>void };
-const webClient:Client={
+export type Client = { read: () => Promise<Snapshot>; call:(tool:string,args:Record<string,unknown>)=>Promise<Snapshot>; subscribe?:(fn:(value:Snapshot)=>void)=>()=>void; query?:<T>(tool:string,args:Record<string,unknown>)=>Promise<T> };
+export const webClient:Client={
+  async query<T>(tool:string,args:Record<string,unknown>){const response=await fetch("/api/hydration",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tool,args})});const data=await response.json() as T & {error?:string};if(!response.ok)throw new Error(data.error??"读取失败");return data;},
   async read(){const response=await fetch("/api/hydration",{cache:"no-store"});const data=await response.json() as Snapshot & {error?:string};if(!response.ok)throw new Error(data.error??"读取失败");return data;},
   async call(tool,args){const response=await fetch("/api/hydration",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tool,args})});const data=await response.json() as Snapshot & {error?:string};if(!response.ok)throw new Error(data.error??"记录失败");return data;},
 };

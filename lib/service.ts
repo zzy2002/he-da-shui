@@ -1,3 +1,4 @@
+import { readHistory, readStatistics } from "./history-service";
 import { and, eq, gte, isNull } from "drizzle-orm";
 import { getDb } from "../db";
 import { entries, settings } from "../db/schema";
@@ -11,8 +12,10 @@ export async function readWeek(userId: string) {
   return summarize(records,config?.goalMl ?? 2000);
 }
 export async function act(userId: string, tool: string, args: Record<string,unknown> = {}) {
+  if(tool==="hydration_read_history")return readHistory(userId,args);
+  if(tool==="hydration_read_statistics")return readStatistics(userId,args);
   const db=getDb();
-  if (tool === "hydration_read_week" || tool === "hydration_open") return readWeek(userId);
+  if (tool === "hydration_read_week" || tool === "hydration_open" || tool === "hydration_open_details") return readWeek(userId);
   if (tool === "hydration_add") {
     const requestId=validId(args.requestId), amountMl=validAmount(args.amountMl), occurredAt=validTime(args.occurredAt);
     await db.insert(entries).values({id:crypto.randomUUID(),userId,requestId,amountMl,occurredAt,createdAt:new Date().toISOString()}).onConflictDoNothing({target:[entries.userId,entries.requestId]}).run();

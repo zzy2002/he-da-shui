@@ -20,14 +20,15 @@ export default async function Guide(){
    <article><h3>看见小小的反馈</h3><p>保存成功后水位上升；当天总量从未达标跨过目标时，播放达标动画。15 秒内点“撤销”可退回刚记的那一笔。</p></article>
   </div></section>
   <section className="guide-section" id="review"><div className="guide-heading"><span>03</span><h2>一天一杯，回看七天</h2></div><table className="guide-table"><thead><tr><th>看到的内容</th><th>它的意思</th></tr></thead><tbody>
-   <tr><td>七只水杯</td><td>今天及前六天。每天按北京时间 00:00 开始累计。</td></tr><tr><td>杯子里的水位</td><td>当天累计 ÷ 当前每日目标。默认目标为 2000 ml；在完整网页或聊天里可修改。</td></tr><tr><td>满杯与实际数值</td><td>达到目标后水位封顶，超过目标的实际毫升数仍会显示。</td></tr><tr><td>灰杯与“—”</td><td>当天未记录，不表示当天没喝水。</td></tr><tr><td>点击某天</td><td>切换记录日期。卡片可补记近七天，完整网页还能查看当天的每笔明细。</td></tr>
+   <tr><td>七只水杯</td><td>今天及前六天。每天按北京时间 00:00 开始累计。</td></tr><tr><td>杯子里的水位</td><td>当天累计 ÷ 当前每日目标。默认目标为 2000 ml；在完整网页或聊天里可修改。</td></tr><tr><td>满杯与实际数值</td><td>达到目标后水位封顶，超过目标的实际毫升数仍会显示。</td></tr><tr><td>灰杯与“—”</td><td>当天未记录，不表示当天没喝水。</td></tr><tr><td>点击某天</td><td>切换记录日期。卡片可补记近七天，展开的完整视图可分页查看全部日期和每笔明细。</td></tr>
   </tbody></table></section>
   <section className="guide-section" id="manage"><div className="guide-heading"><span>04</span><h2>记错了，也很好改</h2></div><div className="guide-sayings">
    <article className="guide-saying"><h3>撤销刚才的一笔</h3><blockquote>“刚才那笔记错了，删掉。”</blockquote><p>也可直接点成功提示里的“撤销”。有多笔可能匹配时，会先确认是哪笔。</p></article>
-   <article className="guide-saying"><h3>修改数量</h3><blockquote>“刚才 250 ml 那笔，改成 150 ml。”</blockquote><p>也可打开完整网页，选中日期，在对应明细旁点“修改”或“删除”。</p></article>
+   <article className="guide-saying"><h3>修改数量</h3><blockquote>“刚才 250 ml 那笔，改成 150 ml。”</blockquote><p>也可展开卡片或打开网页首页，进入“全部历史”，在对应明细旁点“修改”或“删除”。</p></article>
    <article className="guide-saying"><h3>调整目标</h3><blockquote>“把我的每日目标改成 1800 ml。”</blockquote><p>七天水位统一按当前目标重算，已有饮水记录的实际数量不变。</p></article>
-  </div><p className="guide-aside">卡片补记过去日期时默认中午 12:00；需要精确时间或更早日期，可在聊天里说清日期和时间。完整网页可调整选中日期的时间与单次明细。</p></section>
-  <section className="guide-section" id="questions"><div className="guide-heading"><span>05</span><h2>可能还想知道</h2></div>
+  </div><p className="guide-aside">卡片补记过去日期时默认中午 12:00；需要精确时间或更早日期，可在聊天里说清日期和时间。完整视图可直接修改任意历史记录的日期、时间与数量。</p></section>
+  <section className="guide-section" id="views"><div className="guide-heading"><span>05</span><h2>一张卡片，两个使用层次</h2></div><div className="guide-steps"><article><h3>聊天里的嵌入卡片</h3><p>只做简易交互：七日杯子图、加减选量、直接记录、动画和撤销。</p></article><article><h3>展开后的历史与统计</h3><p>点宿主的展开按钮，或说“打开喝大水历史与统计”。完整视图包含概览、全部历史、设置；可切换近7天、近30天和全部，历史支持分页加载更早记录。</p></article><article><h3>统计怎么计算</h3><p>总量、记录天数、达标天数和每日趋势来自自己的实际记录。记录日均只除以有记录的天数；所有达标天数都使用当前目标重新计算。</p></article></div></section>
+  <section className="guide-section" id="questions"><div className="guide-heading"><span>06</span><h2>可能还想知道</h2></div>
    <details className="guide-faq"><summary>语音说完，为什么没有立刻记录？</summary><p>先确认语音内容已经发送到聊天，且“喝大水”插件已连接。需要明确说“已经喝了”以及数量；“准备喝”“举个例子”不会写入记录。保存成功才会更新水杯。这里的演示按钮只模拟聊天结果，不会进行语音识别。</p></details>
    <details className="guide-faq"><summary>每次打开都会重新播放动画吗？</summary><p>普通查看不播放饮水成功动画。新增成功的结果会携带动画反馈，同一浏览会话会抑制同一笔结果的重复播放；刷新不重复记水。达标动画只针对这次饮水让今天的总量跨过当前目标，修改目标不会播放。</p></details>
    <details className="guide-faq"><summary>提醒会不会替我自动记一杯？</summary><p>不会。已配置的早晨提醒用于读取记录、展示和提问；只有你明确说喝了多少或点击记录，才增加饮水量。定时触发依赖 Codex 调度环境可用。</p></details>

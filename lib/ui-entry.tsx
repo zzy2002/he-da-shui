@@ -1,9 +1,14 @@
+import { useEffect, useState } from "react";
+import DetailsApp from "../components/details-app";
 import { createRoot } from "react-dom/client";
 import HydrationApp from "../components/hydration-app";
 import type { Snapshot } from "./hydration";
 import { applyHostContext } from "./host-theme";
 // Standard MCP Apps JSON-RPC bridge; business data never lives in iframe storage.
 let nextId=1;
+let displayMode=document.documentElement.dataset.defaultView==="details"?"fullscreen":"inline";
+const modeSubscribers=new Set<(mode:string)=>void>();
+function updateContext(context:any){applyHostContext(context);if(context?.displayMode==="inline"||context?.displayMode==="fullscreen"){if(displayMode!==context.displayMode)previousHeight=0;displayMode=context.displayMode;for(const fn of modeSubscribers)fn(displayMode);}}
 const requests=new Map<number,{resolve:(value:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
 const subscribers=new Set<(value:Snapshot)=>void>();
 let initial:Snapshot|undefined;
@@ -19,7 +24,7 @@ window.addEventListener("message",event=>{
  if(event.source!==window.parent||!event.data||event.data.jsonrpc!=="2.0")return;
  if(hostOrigin&&event.origin!==hostOrigin)return;
  const message=event.data;
- if(message.method==="ui/notifications/host-context-changed")applyHostContext(message.params);
+ if(message.method==="ui/notifications/host-context-changed")updateContext(message.params);
  if(message.id!==undefined&&requests.has(message.id)){
   // A matching initialization response pins the parent origin for this instance.
   if(event.origin!=="null")hostOrigin??=event.origin;const request=requests.get(message.id)!;clearTimeout(request.timer);requests.delete(message.id);
@@ -28,16 +33,20 @@ window.addEventListener("message",event=>{
  if(message.method==="ui/notifications/tool-result"&&snapshot(message.params?.structuredContent)){initial=message.params.structuredContent;latestNotification=initial;notificationRevision++;for(const fn of subscribers)fn(initial!);}
  if(message.method==="ui/resource-teardown"&&message.id!==undefined)post({jsonrpc:"2.0",id:message.id,result:{}});
 });
-const ready=rpc("ui/initialize",{protocolVersion:"2026-01-26",appInfo:{name:"喝大水",version:"1.0.0"},appCapabilities:{availableDisplayModes:["inline","fullscreen"]}}).then(result=>{applyHostContext(result?.hostContext);post({jsonrpc:"2.0",method:"ui/notifications/initialized"});});
+const ready=rpc("ui/initialize",{protocolVersion:"2026-01-26",appInfo:{name:"喝大水",version:"1.0.0"},appCapabilities:{availableDisplayModes:["inline","fullscreen"]}}).then(result=>{updateContext(result?.hostContext);post({jsonrpc:"2.0",method:"ui/notifications/initialized"});});
 // Retain the rejection for read()/call() while avoiding an unhandled rejection.
 ready.catch(()=>{});
+async function query<T>(tool:string,args:Record<string,unknown>={}):Promise<T>{
+ await ready;const result=await rpc("tools/call",{name:tool,arguments:args});if(result?.isError)throw new Error(result.content?.find((c:any)=>c.type==="text")?.text??"读取失败，请重试");return result.structuredContent as T;
+}
 async function call(tool:string,args:Record<string,unknown>={}){
  await ready;const result=await rpc("tools/call",{name:tool,arguments:args});
  if(result?.isError)throw new Error(result.content?.find((c:any)=>c.type==="text")?.text??"保存失败，请重试");
  if(!snapshot(result?.structuredContent))throw new Error("服务返回的数据不完整，请重试");
  initial=result.structuredContent;return initial!;
 }
-const client={read:async()=>{await ready;if(initial)return initial;const revision=notificationRevision;const data=await call("hydration_read_week");if(notificationRevision!==revision&&latestNotification){initial=latestNotification;return latestNotification;}return data;},call,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
-createRoot(document.getElementById("root")!).render(<HydrationApp client={client} embedded/>);
+const client={read:async()=>{await ready;if(initial)return initial;const revision=notificationRevision;const data=await call("hydration_read_week");if(notificationRevision!==revision&&latestNotification){initial=latestNotification;return latestNotification;}return data;},call,query,subscribe:(fn:(value:Snapshot)=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};}};
+function AppSurface(){const [mode,setMode]=useState(displayMode);useEffect(()=>{modeSubscribers.add(setMode);setMode(displayMode);return()=>{modeSubscribers.delete(setMode);};},[]);return mode==="inline"?<HydrationApp client={client} embedded/>:<DetailsApp client={client}/>;}
+createRoot(document.getElementById("root")!).render(<AppSurface/>);
 let previousHeight=0;
-new ResizeObserver(()=>{const height=document.documentElement.scrollHeight;if(height!==previousHeight){previousHeight=height;void ready.then(()=>post({jsonrpc:"2.0",method:"ui/notifications/size-changed",params:{height}})).catch(()=>{});}}).observe(document.getElementById("root")!);
+new ResizeObserver(()=>{if(displayMode!=="inline")return;const height=Math.ceil(document.getElementById("root")!.getBoundingClientRect().height);if(height!==previousHeight){previousHeight=height;void ready.then(()=>post({jsonrpc:"2.0",method:"ui/notifications/size-changed",params:{height}})).catch(()=>{});}}).observe(document.getElementById("root")!);

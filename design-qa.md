@@ -30,3 +30,17 @@ final result: passed
 - Host voice transcription and the next real cloud write were not exercised: all new animation/save tests used local identities or isolated example data. No actual user drink was fabricated.
 - Desktop viewport override was not reflected by this browser provider. Narrow-page verification instead used a real390px iframe viewport; its document and card widths were measured directly.
 - Reduced-motion behavior is implemented through CSS and retains textual receipts; OS preference switching was not exercised.
+
+## Follow-up: full history and statistics
+
+final result: passed
+
+- Existing compact card remains visually and functionally intact. `/` and expanded MCP mode now share `DetailsApp`; `/guide` remains the separate manual. Resource identities and host mode notifications control compact versus complete view.
+- New full-view evidence: `outputs/details-panel.png` (420 × 780 crop, local sample identity); no horizontal overflow (420 CSS px client and scroll widths). Initial empty standalone view was also inspected; zero recorded-day average now displays a dash.
+- Full view uses the same system/PingFang typography, charcoal and muted teal tokens, white/gray surfaces, restrained spacing and library icons. Desktop uses four statistic columns, narrow panels two. History records use date groups and row separators rather than per-row cards.
+- Browser and real local built Worker: 62 sample records across62 dates, including records61 days old. Loading history appended50 ->62 rows, oldest2026-09-01. Changing1110 ->1150 updated total61.49 ->61.53L. Goal2000 ->1000 changed achievement8 ->19days; restoring2000 returned8 without changing quantity.
+- 7-day filter showed5.7L,7recorded days,1achieved day,814ml recorded-day average; backend tests verify empty ranges, same-time pagination without skipped/duplicate IDs, older updates/deletes, invalid cursor/range and cross-user isolation.
+- A resize issue was found and corrected: fullscreen no longer publishes document height, and inline measures root content and resets the last height when changing modes. Fullscreen fixture holds800px; collapse restores247px and contains one compact view and zero full-view roots.
+- Simulated dark full panel used backgroundrgb(32,32,30), textrgb(231,231,223) and had no horizontal overflow.
+- One browser automation MutationObserver error appeared while controlling a long nested iframe; the shipped UI bundle contains no MutationObserver. Primary app interactions completed via native accessibility actions. No app failure was observed.
+- Verification boundaries: mode notifications and side-panel width were simulated locally. The current Codex native expansion and external-site connection remain to be checked after publication when reachable. No real cloud user entries were added, edited or deleted during tests.

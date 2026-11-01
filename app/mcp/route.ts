@@ -1,7 +1,7 @@
 import { getChatGPTUser } from "../chatgpt-auth";
 import { act } from "../../lib/service";
 import { InputError } from "../../lib/hydration";
-import { tools, UI_URI } from "../../lib/tools";
+import { tools, UI_URI, DETAILS_URI } from "../../lib/tools";
 import { uiHtml } from "../../lib/ui-bundle";
 export const dynamic="force-dynamic";
 export async function POST(request:Request){
@@ -14,10 +14,11 @@ export async function POST(request:Request){
   if(body.method==="initialize") return reply({protocolVersion:"2025-11-25",capabilities:{tools:{},resources:{}},serverInfo:{name:"he-da-shui",version:"1.0.0"}});
   if(body.method==="ping") return reply({});
   if(body.method==="tools/list") return reply({tools,ttlMs:60000,cacheScope:"private"});
-  if(body.method==="resources/list") return reply({ttlMs:60000,cacheScope:"private",resources:[{uri:UI_URI,name:"喝大水",mimeType:"text/html;profile=mcp-app"}]});
+  if(body.method==="resources/list") return reply({ttlMs:60000,cacheScope:"private",resources:[{uri:UI_URI,name:"喝大水",mimeType:"text/html;profile=mcp-app"},{uri:DETAILS_URI,name:"喝大水 · 历史与统计",mimeType:"text/html;profile=mcp-app"}]});
   if(body.method==="resources/read"){
-    if(![UI_URI,"ui://he-da-shui/hydration-v1.html","ui://he-da-shui/hydration-v2.html","ui://he-da-shui/hydration-v3.html","ui://he-da-shui/hydration-v4.html","ui://he-da-shui/hydration-v5.html","ui://he-da-shui/hydration-v6.html","ui://he-da-shui/hydration-v7.html","ui://he-da-shui/hydration-v8.html","ui://he-da-shui/hydration-v9.html"].includes(body.params?.uri??"")) return fail(-32602,"Unknown resource");
-    return reply({ttlMs:60000,cacheScope:"private",contents:[{uri:body.params?.uri??UI_URI,mimeType:"text/html;profile=mcp-app",text:uiHtml,_meta:{ui:{prefersBorder:false},"openai/widgetPrefersBorder":false,"openai/ui":{availableDisplayModes:["inline","fullscreen"],preferredDisplayMode:"inline"}}}]});
+    const details=body.params?.uri===DETAILS_URI;
+    if(![DETAILS_URI,UI_URI,"ui://he-da-shui/hydration-v1.html","ui://he-da-shui/hydration-v2.html","ui://he-da-shui/hydration-v3.html","ui://he-da-shui/hydration-v4.html","ui://he-da-shui/hydration-v5.html","ui://he-da-shui/hydration-v6.html","ui://he-da-shui/hydration-v7.html","ui://he-da-shui/hydration-v8.html","ui://he-da-shui/hydration-v9.html","ui://he-da-shui/hydration-v10.html"].includes(body.params?.uri??"")) return fail(-32602,"Unknown resource");
+    return reply({ttlMs:60000,cacheScope:"private",contents:[{uri:body.params?.uri??UI_URI,mimeType:"text/html;profile=mcp-app",text:details?uiHtml.replace('<html lang="zh-CN">','<html lang="zh-CN" data-default-view="details">'):uiHtml,_meta:{ui:{prefersBorder:false},"openai/widgetPrefersBorder":false,"openai/ui":{availableDisplayModes:["inline","fullscreen"],preferredDisplayMode:details?"fullscreen":"inline"}}}]});
   }
   if(body.method==="tools/call"){
     const user=await getChatGPTUser();if(!user)return fail(-32001,"需要登录才能读取或记录饮水",401);
