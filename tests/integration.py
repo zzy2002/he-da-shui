@@ -38,10 +38,26 @@ yesterday=(now-datetime.timedelta(days=1)).replace(hour=12,minute=0,second=0,mic
 assert action('hydration_add',{'amountMl':350,'requestId':str(uuid.uuid4()),'occurredAt':yesterday})[1]['days'][-2]['totalMl']==350
 assert action('hydration_add',{'amountMl':0,'requestId':str(uuid.uuid4())})[0]==400
 assert request(body={'tool':'hydration_set_goal','args':{'goalMl':1000}},origin='https://example.invalid')[0]==403
+# Friends are manually reported DAILY totals, kept separate from personal entries.
+fdate=now.date().isoformat()
+_,s=action('hydration_set_friend_day',{'name':'  小王  ','date':fdate,'totalMl':2200})
+assert len(s['friendDays'])==1 and s['friendDays'][0]['name']=='小王'
+assert s['days'][-1]['totalMl']==400
+friend_id=s['friendDays'][0]['id']
+_,s=action('hydration_set_friend_day',{'name':'小王','date':fdate,'totalMl':1800})
+assert len(s['friendDays'])==1 and s['friendDays'][0]['totalMl']==1800
+assert s['friendDays'][0]['id']==friend_id
+assert request(user=b)[1]['friendDays']==[]
+assert action('hydration_delete_friend_day',{'id':friend_id},user=b)[0]==200
+assert request()[1]['friendDays'][0]['totalMl']==1800
+assert action('hydration_set_friend_day',{'name':'小王','date':'2026-02-30','totalMl':2200})[0]==400
+assert action('hydration_set_friend_day',{'name':'小王','date':fdate,'totalMl':-1})[0]==400
+assert action('hydration_delete_friend_day',{'id':friend_id})[1]['friendDays']==[]
+assert action('hydration_delete_friend_day',{'id':friend_id})[1]['friendDays']==[]
 for method in ['server/discover','tools/list']:
  status,reply=request('/mcp',{'jsonrpc':'2.0','id':1,'method':method});assert status==200 and 'result' in reply
 status,reply=request('/mcp',{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'hydration_read_week','arguments':{}}});assert reply['result']['structuredContent']['days'][-1]['totalMl']==400
-status,reply=request('/mcp',{'jsonrpc':'2.0','id':3,'method':'resources/read','params':{'uri':'ui://he-da-shui/hydration-v6.html'}})
+status,reply=request('/mcp',{'jsonrpc':'2.0','id':3,'method':'resources/read','params':{'uri':'ui://he-da-shui/hydration-v7.html'}})
 resource=reply['result']['contents'][0];assert reply['result']['resultType']=='complete' and reply['result']['ttlMs']>=0 and reply['result']['cacheScope']=='private'
 assert resource['_meta']['openai/ui']['preferredDisplayMode']=='inline' and 'postMessage' in resource['text']
-print('PASS: auth, 250+500, retry deduplication, request conflict, user isolation, edit/delete, goal, backfill, validation, origin, MCP tools/resource')
+print('PASS: auth, 250+500, retry deduplication, request conflict, user isolation, edit/delete, goal, backfill, validation, origin, MCP tools/resource, friends overwrite/isolation/deletion')

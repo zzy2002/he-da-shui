@@ -9,3 +9,11 @@ export const entries = sqliteTable("hydration_entries", {
   deletedAt: text("deleted_at"),
 }, t => [uniqueIndex("hydration_request_unique").on(t.userId,t.requestId),
   index("hydration_user_time").on(t.userId,t.occurredAt)]);
+
+export const friendDays = sqliteTable("hydration_friend_days", {
+ id: text("id").primaryKey(), userId: text("user_id").notNull(),
+ friendKey: text("friend_key").notNull(), name: text("name").notNull(),
+ date: text("date").notNull(), totalMl: integer("total_ml").notNull(),
+ updatedAt: text("updated_at").notNull(), deletedAt: text("deleted_at"),
+}, t => [uniqueIndex("hydration_friend_day_unique").on(t.userId,t.friendKey,t.date),
+ index("hydration_friend_user_date").on(t.userId,t.date)]);
