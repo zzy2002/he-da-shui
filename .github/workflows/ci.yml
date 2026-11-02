@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm run install:ci
+      - name: Check public source
+        run: npm run check:public
+      - name: Test domain logic
+        run: npm test
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build app and MCP UI
+        run: npm run build
+      - name: Test local Worker authentication and data isolation
+        shell: bash
+        run: |
+          for migration in drizzle/[0-9]*.sql; do
+            node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js \
+              d1 execute DB --local --config dist/server/wrangler.json \
+              --persist-to .wrangler/state --file "$migration"
+          done
+          npm start -- --port 3188 > "$RUNNER_TEMP/hydration-worker.log" 2>&1 &
+          task_worker_pid=$!
+          trap 'kill "$task_worker_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --silent --output /dev/null http://127.0.0.1:3188/api/hydration; then break; fi
+            sleep 1
+          done
+          python3 tests/integration.py || { cat "$RUNNER_TEMP/hydration-worker.log"; exit 1; }
