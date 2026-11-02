@@ -42,6 +42,6 @@ export default function Guide(){
    <details className="guide-faq"><summary>每天早上可以提醒吗？</summary><p>可以在支持调度的 Codex 环境中为自己的聊天设置早晨提醒。提醒只读取、展示和询问，不会替你自动记一杯。使用本网页不会自动创建定时任务。</p></details>
    <details className="guide-faq"><summary>动画会不会每次打开都播放？</summary><p>普通查看不播放新增反馈。记录成功后播放水位变化，今天的总量跨过目标时播放达标动画；修改目标不会播放庆祝。系统开启“减少动态效果”后，保留文字提示，停用浮动和弹跳效果。</p></details>
   </section>
-  <footer className="guide-footer"><span>喝大水 · 用 Codex 构建的 MCP App</span><a href="/">进入我的真实记录 ↗</a></footer>
+  <footer className="guide-footer"><span>喝大水 · 用 Codex 构建的 MCP App</span><a href="https://github.com/zzy2002/he-da-shui" target="_blank" rel="noreferrer">GitHub 开源代码 ↗</a><a href="/">进入我的真实记录 ↗</a></footer>
  </div></main>;
 }

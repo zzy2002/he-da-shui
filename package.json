@@ -2,6 +2,9 @@
   "name": "he-da-shui",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/zzy2002/he-da-shui.git" },
+  "homepage": "https://he-da-shui-daily.zzybread.chatgpt.site/guide",
   "engines": {
     "node": ">=22.13.0"
   },
@@ -11,6 +14,9 @@
     "build": "node scripts/run-framework.mjs build",
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "typecheck": "tsc --noEmit",
+    "check:public": "node scripts/check-public-source.mjs",
+    "sync:github": "node scripts/sync-github.mjs",
     "db:generate": "drizzle-kit generate",
     "build:ui": "node scripts/build-ui.mjs",
     "prebuild": "npm run build:ui",

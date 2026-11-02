@@ -30,6 +30,10 @@ yarn-error.log*
 .env*
 .dev.vars*
 *.pem
+*.key
+*.sqlite
+*.sqlite3
+*.db
 
 # Checkout-local tool state
 /.wrangler/
